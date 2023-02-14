@@ -1,0 +1,39 @@
+#body {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: start;
+}
+:root {
+    --keyWidth: 50px;
+
+}
+
+.reset-button {
+    background-color: transparent;
+   
+  }
+
+.pianoKey {
+    height: 200px;
+    width: var(--keyWidth);
+    border: solid black 2px;
+    border-radius: 5px;
+    border-bottom: 15px solid darkslategrey;
+    z-index: 0;
+    margin: 0 1px;
+}
+
+.blackKey {
+    background-color: black;
+    height: 125px;
+    margin: 0px calc(-.5* var(--keyWidth));
+    border-color: gray;
+    border-bottom: 10px solid #444444;
+    z-index: 1;
+}
+
+.pianoKey:active {
+    border-bottom: solid 5px black;
+    background-color: antiquewhite;
+    
+}
