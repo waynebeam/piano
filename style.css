@@ -5,12 +5,17 @@
 }
 
 #directionsAndButtonsContainer {
-    width: 400px;
+    width: max-content;
     display: flex;
     flex-flow: row wrap;
     align-items: center;
     justify-content: space-between;
 }
+
+#directionsContainer {
+    margin: 20px 20px;
+}
+
 
 .recordButton {
     width: 50px;
@@ -22,6 +27,8 @@
     font-size: 3rem;
     color: darkred;
     transition: all 50ms ease-out;
+    display: inline-block;
+    margin: 0 10px;
 
 
 }

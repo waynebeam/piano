@@ -83,12 +83,17 @@ function setupDirections(){
 }
 
 function setupButtons(){
-    let buttonsContainer = document.getElementById("buttonsContainer");
-    let button = document.createElement("div");
-    button.className = "recordButton";
-    button.innerHTML = "⏺";
-    buttonsContainer.appendChild(button);
-    button.addEventListener("click", ()=>toggleRecord(button));
+    let buttonsContainer = document.getElementById("directionsAndButtonsContainer");
+    let recordButton = document.createElement("div");
+    recordButton.className = "recordButton";
+    recordButton.innerHTML = "⏺";
+    buttonsContainer.appendChild(recordButton);
+    recordButton.addEventListener("click", ()=>toggleRecord(recordButton));
+    let playButton = document.createElement("div");
+    playButton.className = "recordButton";
+    playButton.innerHTML = "⏯";
+    buttonsContainer.appendChild(playButton);
+    playButton.addEventListener("click", ()=>toggleRecord(playButton));
 }
 
 function toggleRecord(btn){
