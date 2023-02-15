@@ -2,6 +2,12 @@ let body = document.getElementById("body");
 let audioContext = new AudioContext();
 let noteStartTime;
 const fadeTime = 0.8;
+let majChord = false;
+
+function init(){
+    setupKeyboard();
+    setUpKeyListeners();
+}
 
 function setupKeyboard(){
 notes.forEach((note, idx) => {
@@ -20,8 +26,28 @@ notes.forEach((note, idx) => {
 })
 }
 
+function setUpKeyListeners(){
+    
+}
+
 function handleKeyPress(e, note) {
-    playTone(e.target, note);
+    let notesToPlay = [note];
+    if(majChord){
+        let majThird = note.index + 4;
+        if(majThird<notes.length){
+            let thirdNote = notes[majThird];
+            thirdNote.freq = noteFrequencies[thirdNote.note];
+            notesToPlay.push(thirdNote);
+        }
+        let perfFifth = note.index + 7;
+        if(perfFifth<notes.length) {
+            let fifthNote = notes[perfFifth];
+            fifthNote.freq = noteFrequencies[fifthNote.note];
+            notesToPlay.push(fifthNote);
+        }
+    }
+    playTone(e.target, ...notesToPlay);
+    
 }
 
 async function playTone(pressedKey, ...notes) {
@@ -301,4 +327,4 @@ const noteFrequencies = {
     'C8': 4186.01
 }
 
-setupKeyboard();
+init();
