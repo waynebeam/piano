@@ -2,6 +2,45 @@ let body = document.getElementById("body");
 let audioContext = new AudioContext();
 let noteStartTime;
 const fadeTime = 0.8;
+
+function setupKeyboard(){
+notes.forEach(note => {
+    {
+        note.freq = noteFrequencies[note.note];
+        let pianoKey = document.createElement("button");
+        pianoKey.className = "reset-button pianoKey";
+        if(note.blackKey){
+            pianoKey.className += " blackKey";
+        }
+        body.appendChild(pianoKey);
+
+        pianoKey.addEventListener("mousedown", (e)=>handleKeyPress(e, note));
+    }
+})
+}
+
+function handleKeyPress(e, note) {
+    playTone(e.target, note);
+}
+
+async function playTone(pressedKey, note) {
+    noteStartTime = audioContext.currentTime;
+    let gain = audioContext.createGain();
+    gain.connect(audioContext.destination);
+    let osc = audioContext.createOscillator();
+    osc.connect(gain);
+    osc.type = "triangle";
+    osc.frequency.value = note.freq;
+    osc.start();
+    await new Promise((resolve)=>{
+        pressedKey.addEventListener("mouseup", ()=>resolve());
+    });
+    const stopTime = audioContext.currentTime + fadeTime;
+    gain.gain.exponentialRampToValueAtTime(.001, stopTime)
+    osc.stop(stopTime);
+
+}
+
 const notes = [
     {
         note: "C3",
@@ -58,6 +97,59 @@ const notes = [
     },
     {
         note: "C4",
+        blackKey: false,
+    },
+    {
+        note: "C#4",
+        blackKey: true,
+    },
+
+    {
+        note: "D4",
+        blackKey: false,
+    
+    },
+    {
+        note: "D#4",
+        blackKey: true,
+            },
+    {
+        note: "E4",
+        blackKey: false,
+    
+    },
+    {
+        note: "F4",
+        blackKey: false,
+    
+    },
+    {
+        note: "F#4",
+        blackKey: true,
+      },
+    {
+        note: "G4",
+        blackKey: false,
+      },
+    {
+        note: "G#4",
+        blackKey: true,
+            },
+    {
+        note: "A4",
+        blackKey: false,
+      },
+    {
+        note: "A#4",
+        blackKey: true,
+            },
+    {
+        note: "B4",
+        blackKey: false,
+    
+    },
+    {
+        note: "C5",
         blackKey: false,
     },
 ]
@@ -201,40 +293,4 @@ const noteFrequencies = {
     'C8': 4186.01
 }
 
-
-
-notes.forEach(note => {
-    {
-        note.freq = noteFrequencies[note.note];
-        let pianoKey = document.createElement("button");
-        pianoKey.className = "reset-button pianoKey";
-        if(note.blackKey){
-            pianoKey.className += " blackKey";
-        }
-        body.appendChild(pianoKey);
-
-        pianoKey.addEventListener("mousedown", (e)=>handleKeyPress(e, note));
-    }
-})
-
-function handleKeyPress(e, note) {
-    playTone(e.target, note);
-}
-
-async function playTone(pressedKey, note) {
-    noteStartTime = audioContext.currentTime;
-    let gain = audioContext.createGain();
-    gain.connect(audioContext.destination);
-    let osc = audioContext.createOscillator();
-    osc.connect(gain);
-    osc.type = "triangle";
-    osc.frequency.value = note.freq;
-    osc.start();
-    await new Promise((resolve)=>{
-        pressedKey.addEventListener("mouseup", ()=>resolve());
-    });
-    const stopTime = audioContext.currentTime + fadeTime;
-    gain.gain.exponentialRampToValueAtTime(.001, stopTime)
-    osc.stop(stopTime);
-
-}
+setupKeyboard();
