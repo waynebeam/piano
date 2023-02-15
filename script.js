@@ -4,9 +4,10 @@ let noteStartTime;
 const fadeTime = 0.8;
 
 function setupKeyboard(){
-notes.forEach(note => {
+notes.forEach((note, idx) => {
     {
         note.freq = noteFrequencies[note.note];
+        note.index = idx;
         let pianoKey = document.createElement("button");
         pianoKey.className = "reset-button pianoKey";
         if(note.blackKey){
@@ -23,21 +24,28 @@ function handleKeyPress(e, note) {
     playTone(e.target, note);
 }
 
-async function playTone(pressedKey, note) {
+async function playTone(pressedKey, ...notes) {
     noteStartTime = audioContext.currentTime;
-    let gain = audioContext.createGain();
-    gain.connect(audioContext.destination);
-    let osc = audioContext.createOscillator();
-    osc.connect(gain);
-    osc.type = "triangle";
-    osc.frequency.value = note.freq;
-    osc.start();
+    let gainAndOscs = [];
+    notes.forEach((note)=>{
+        let gain = audioContext.createGain();
+        gain.connect(audioContext.destination);
+        let osc = audioContext.createOscillator();
+        osc.connect(gain);
+        osc.type = "triangle";
+        osc.frequency.value = note.freq;
+        osc.start();
+        gainAndOscs.push({gain: gain, osc: osc});
+    })
     await new Promise((resolve)=>{
-        pressedKey.addEventListener("mouseup", ()=>resolve());
+        document.addEventListener("mouseup", ()=>resolve());
+        pressedKey.addEventListener("mouseout", ()=>resolve());
     });
-    const stopTime = audioContext.currentTime + fadeTime;
-    gain.gain.exponentialRampToValueAtTime(.001, stopTime)
-    osc.stop(stopTime);
+    gainAndOscs.forEach((gainAndOsc)=>{
+        const stopTime = audioContext.currentTime + fadeTime;
+        gainAndOsc.gain.gain.exponentialRampToValueAtTime(.001, stopTime)
+        gainAndOsc.osc.stop(stopTime);
+    });
 
 }
 
