@@ -5,6 +5,7 @@
 }
 :root {
     --keyWidth: 50px;
+    --keyHeight: 200px;
 
 }
 
@@ -14,7 +15,7 @@
   }
 
 .pianoKey {
-    height: 200px;
+    height: var(--keyHeight);
     width: var(--keyWidth);
     border: solid black 2px;
     border-radius: 5px;
@@ -22,11 +23,12 @@
     z-index: 0;
     margin: 0 2px;
     transition: all 50ms ease-out;
+    transform-origin: top;
 }
 
 .blackKey {
     background-color: black;
-    height: 125px;
+    height: calc(var(--keyHeight)*.65);
     margin: 0px calc(-.5* var(--keyWidth));
     border-color: gray;
     border-bottom: 10px solid #444444;
@@ -36,5 +38,6 @@
 .pianoKeyPressed {
     border-bottom: solid 5px black;
     background-color: antiquewhite;
+    transform: scaleY(1.04);
     
 }

@@ -74,13 +74,13 @@ function handleKeyPress(e, note) {
             fifthNote.freq = noteFrequencies[fifthNote.note];
             notesToPlay.push(fifthNote);
         }
-    }
-    if(seventhChord) {
-        let seventh = note.index + 10;
-        if (seventh < notes.length) {
-            let seventhNote = notes[seventh];
-            seventhNote.freq = noteFrequencies[seventhNote.note];
-            notesToPlay.push(seventhNote);
+        if(seventhChord) {
+            let seventh = note.index + 10;
+            if (seventh < notes.length) {
+                let seventhNote = notes[seventh];
+                seventhNote.freq = noteFrequencies[seventhNote.note];
+                notesToPlay.push(seventhNote);
+            }
         }
     }
     if (majChord) {
