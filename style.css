@@ -20,7 +20,7 @@
     border-radius: 5px;
     border-bottom: 15px solid darkslategrey;
     z-index: 0;
-    margin: 0 1px;
+    margin: 0 2px;
 }
 
 .blackKey {
@@ -32,7 +32,7 @@
     z-index: 1;
 }
 
-.pianoKey:active {
+.pianoKeyPressed {
     border-bottom: solid 5px black;
     background-color: antiquewhite;
     

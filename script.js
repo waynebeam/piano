@@ -15,7 +15,7 @@ function init() {
 function setupKeyboard() {
     notes.forEach((note, idx) => {
         {
-            let pianoKey = document.createElement("button");
+            let pianoKey = document.createElement("div");
             pianoKey.className = "reset-button pianoKey";
             note.freq = noteFrequencies[note.note];
             note.index = idx;
@@ -109,6 +109,7 @@ async function playTone(pressedKey, ...notes) {
     noteStartTime = audioContext.currentTime;
     let gainAndOscs = [];
     notes.forEach((note) => {
+        note.pianoKey.classList.toggle("pianoKeyPressed")
         let gain = audioContext.createGain();
         gain.connect(audioContext.destination);
         let osc = audioContext.createOscillator();
@@ -127,6 +128,9 @@ async function playTone(pressedKey, ...notes) {
         gainAndOsc.gain.gain.exponentialRampToValueAtTime(.001, stopTime)
         gainAndOsc.osc.stop(stopTime);
     });
+    notes.forEach((note) => {
+        note.pianoKey.classList.toggle("pianoKeyPressed")
+    })
 
 }
 
