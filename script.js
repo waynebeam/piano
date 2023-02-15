@@ -4,56 +4,68 @@ let noteStartTime;
 const fadeTime = 0.8;
 let majChord = false;
 
-function init(){
+
+function init() {
     setupKeyboard();
     setUpKeyListeners();
 }
 
-function setupKeyboard(){
-notes.forEach((note, idx) => {
-    {
-        note.freq = noteFrequencies[note.note];
-        note.index = idx;
-        let pianoKey = document.createElement("button");
-        pianoKey.className = "reset-button pianoKey";
-        if(note.blackKey){
-            pianoKey.className += " blackKey";
-        }
-        body.appendChild(pianoKey);
+function setupKeyboard() {
+    notes.forEach((note, idx) => {
+        {
+            note.freq = noteFrequencies[note.note];
+            note.index = idx;
+            let pianoKey = document.createElement("button");
+            pianoKey.className = "reset-button pianoKey";
+            if (note.blackKey) {
+                pianoKey.className += " blackKey";
+            }
+            body.appendChild(pianoKey);
 
-        pianoKey.addEventListener("mousedown", (e)=>handleKeyPress(e, note));
-    }
-})
+            pianoKey.addEventListener("mousedown", (e) => handleKeyPress(e, note));
+        }
+    })
 }
 
-function setUpKeyListeners(){
-    
+function setUpKeyListeners() {
+    document.addEventListener("keypress", (e)=>{
+        if(e.key === "a" && !majChord)
+        {
+            majChord = true;
+        }
+    })
+    document.addEventListener("keyup", e=>{
+        if(e.key === "a")
+        {
+            majChord = false;
+        }
+    })
 }
 
 function handleKeyPress(e, note) {
     let notesToPlay = [note];
-    if(majChord){
+    if (majChord) {
         let majThird = note.index + 4;
-        if(majThird<notes.length){
+        if (majThird < notes.length) {
             let thirdNote = notes[majThird];
             thirdNote.freq = noteFrequencies[thirdNote.note];
             notesToPlay.push(thirdNote);
         }
         let perfFifth = note.index + 7;
-        if(perfFifth<notes.length) {
+        if (perfFifth < notes.length) {
             let fifthNote = notes[perfFifth];
             fifthNote.freq = noteFrequencies[fifthNote.note];
             notesToPlay.push(fifthNote);
         }
     }
     playTone(e.target, ...notesToPlay);
-    
+
 }
 
 async function playTone(pressedKey, ...notes) {
     noteStartTime = audioContext.currentTime;
     let gainAndOscs = [];
-    notes.forEach((note)=>{
+    notes.forEach((note) => {
         let gain = audioContext.createGain();
         gain.connect(audioContext.destination);
         let osc = audioContext.createOscillator();
@@ -61,13 +73,13 @@ async function playTone(pressedKey, ...notes) {
         osc.type = "triangle";
         osc.frequency.value = note.freq;
         osc.start();
-        gainAndOscs.push({gain: gain, osc: osc});
+        gainAndOscs.push({ gain: gain, osc: osc });
     })
-    await new Promise((resolve)=>{
-        document.addEventListener("mouseup", ()=>resolve());
-        pressedKey.addEventListener("mouseout", ()=>resolve());
+    await new Promise((resolve) => {
+        document.addEventListener("mouseup", () => resolve());
+        pressedKey.addEventListener("mouseout", () => resolve());
     });
-    gainAndOscs.forEach((gainAndOsc)=>{
+    gainAndOscs.forEach((gainAndOsc) => {
         const stopTime = audioContext.currentTime + fadeTime;
         gainAndOsc.gain.gain.exponentialRampToValueAtTime(.001, stopTime)
         gainAndOsc.osc.stop(stopTime);
@@ -79,55 +91,55 @@ const notes = [
     {
         note: "C3",
         blackKey: false,
-    
+
     },
     {
         note: "C#3",
         blackKey: true,
-            },
+    },
     {
         note: "D3",
         blackKey: false,
-    
+
     },
     {
         note: "D#3",
         blackKey: true,
-            },
+    },
     {
         note: "E3",
         blackKey: false,
-    
+
     },
     {
         note: "F3",
         blackKey: false,
-    
+
     },
     {
         note: "F#3",
         blackKey: true,
-      },
+    },
     {
         note: "G3",
         blackKey: false,
-      },
+    },
     {
         note: "G#3",
         blackKey: true,
-            },
+    },
     {
         note: "A3",
         blackKey: false,
-      },
+    },
     {
         note: "A#3",
         blackKey: true,
-            },
+    },
     {
         note: "B3",
         blackKey: false,
-    
+
     },
     {
         note: "C4",
@@ -141,46 +153,46 @@ const notes = [
     {
         note: "D4",
         blackKey: false,
-    
+
     },
     {
         note: "D#4",
         blackKey: true,
-            },
+    },
     {
         note: "E4",
         blackKey: false,
-    
+
     },
     {
         note: "F4",
         blackKey: false,
-    
+
     },
     {
         note: "F#4",
         blackKey: true,
-      },
+    },
     {
         note: "G4",
         blackKey: false,
-      },
+    },
     {
         note: "G#4",
         blackKey: true,
-            },
+    },
     {
         note: "A4",
         blackKey: false,
-      },
+    },
     {
         note: "A#4",
         blackKey: true,
-            },
+    },
     {
         note: "B4",
         blackKey: false,
-    
+
     },
     {
         note: "C5",
