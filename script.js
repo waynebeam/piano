@@ -119,14 +119,14 @@ function togglePlay() {
     if (!playing) {
         if (recordedNotes.length) {
             playButton.classList.toggle("pianoKeyPressed");
-            if(recording){
+            if (recording) {
                 toggleRecord();
             }
             playing = true;
-            replayNotes(...recordedNotes);
+            replayNotes(recordedNotes);
         }
     }
-    
+
 
 }
 
@@ -180,44 +180,43 @@ function handleKeyPress(e, note) {
 
 async function playTone(pressedKey, ...notes) {
     currNoteStartTime = audioContext.currentTime;
-    let gainAndOscs = [];
+    let oscs = [];
     let newNotes = [];
+    let gain = audioContext.createGain();
+    gain.connect(audioContext.destination);
     notes.forEach((note) => {
         note.pianoKey.classList.toggle("pianoKeyPressed")
-        let gain = audioContext.createGain();
-        gain.connect(audioContext.destination);
         let osc = audioContext.createOscillator();
         osc.connect(gain);
         osc.type = "triangle";
         osc.frequency.value = note.freq;
         osc.start();
-        gainAndOscs.push({ gain: gain, osc: osc });
+        oscs.push(osc);
         let newNote = { note: note.note, freq: note.freq };
         newNotes.push(newNote);
-        
+
     })
     await new Promise((resolve) => {
         document.addEventListener("mouseup", () => resolve());
         pressedKey.addEventListener("mouseout", () => resolve());
     });
-    gainAndOscs.forEach((gainAndOsc) => {
-        const stopTime = audioContext.currentTime + fadeTime;
-        gainAndOsc.gain.gain.exponentialRampToValueAtTime(.001, stopTime)
-        gainAndOsc.osc.stop(stopTime);
+    const stopTime = audioContext.currentTime + fadeTime;
+    gain.gain.exponentialRampToValueAtTime(.001, stopTime);
+    oscs.forEach((osc) => {
+        osc.stop(stopTime);
     });
     notes.forEach((note) => {
         note.pianoKey.classList.toggle("pianoKeyPressed")
     })
     newNotes.forEach(newNote => {
-        if (recording) {
-            newNote.duration = audioContext.currentTime - currNoteStartTime;
-            newNote.startTime = currNoteStartTime - firstNoteStartTime;
-            recordedNotes.push(...newNotes);
-        }
 
+        newNote.duration = audioContext.currentTime - currNoteStartTime;
+        newNote.startTime = currNoteStartTime - firstNoteStartTime;
 
     })
-
+    if (recording) {
+        recordedNotes.push(newNotes);
+    }
 }
 
 const notes = [
@@ -475,31 +474,31 @@ const noteFrequencies = {
 init();
 
 
-function replayNotes(...notes) {
-    notes.forEach((note, i, list) => {
-        
+function replayNotes(noteGroups) {
+    noteGroups.forEach((noteGroup) => {
+        let gain = audioContext.createGain();
+        noteGroup.forEach((note) => {
             let time = setTimeout(() => {
-                playBasicSound(note.freq, note.duration, note.oscType);
+                playBasicSound(gain, note.freq, note.duration, note.oscType);
             }, note.startTime * 1000);
-       
+        })
+
     })
 
-    setTimeout(()=>{
+    setTimeout(() => {
         playButton.classList.remove("pianoKeyPressed");
         playing = false;
-    },(recordingTime + notes[notes.length-1].duration) * 1000);
+    }, (recordingTime + noteGroups[noteGroups.length - 1][0].duration) * 1000);
 
     //if(!notes.length) playBasicSound();
 }
 
-async function playBasicSound(freq, duration = 1, oscType = "triangle") {
+async function playBasicSound(gain, freq, duration, oscType = "triangle") {
     const frequency = freq;
 
-    const gain = audioContext.createGain();
     const oscillator = audioContext.createOscillator();
     gain.connect(audioContext.destination);
     oscillator.connect(gain);
-
     oscillator.type = oscType;
     oscillator.frequency.value = frequency;
 
@@ -510,3 +509,5 @@ async function playBasicSound(freq, duration = 1, oscType = "triangle") {
     oscillator.stop(audioContext.currentTime + fadeTime);
     gain.gain.exponentialRampToValueAtTime(.001, audioContext.currentTime + fadeTime);
 }
+
+//TODO: make the record and play toggles, play start play stop and record start and record stop
