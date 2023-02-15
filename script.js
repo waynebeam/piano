@@ -6,6 +6,11 @@ const fadeTime = 0.8;
 let recording = false;
 let playing = false;
 let recordedNotes = [];
+let recordingTime;
+let playButton = document.createElement("div");
+let recordButton = document.createElement("div");
+
+
 
 const chordControls = {
     majChord: {
@@ -88,38 +93,40 @@ function setupDirections() {
 
 function setupButtons() {
     let buttonsContainer = document.getElementById("directionsAndButtonsContainer");
-    let recordButton = document.createElement("div");
     recordButton.className = "recordButton";
     recordButton.innerHTML = "⏺";
     buttonsContainer.appendChild(recordButton);
-    recordButton.addEventListener("click", () => toggleRecord(recordButton));
-    let playButton = document.createElement("div");
+    recordButton.addEventListener("click", () => toggleRecord());
     playButton.className = "recordButton";
     playButton.innerHTML = "⏯";
     buttonsContainer.appendChild(playButton);
-    playButton.addEventListener("click", () => togglePlay(playButton));
+    playButton.addEventListener("click", () => togglePlay());
 }
 
-function toggleRecord(btn) {
-    btn.classList.toggle("pianoKeyPressed");
+function toggleRecord() {
+    recordButton.classList.toggle("pianoKeyPressed");
     recording = !recording;
     if (recording) {
         recordedNotes = [];
         firstNoteStartTime = audioContext.currentTime;
     }
+    if (!recording) {
+        recordingTime = audioContext.currentTime - firstNoteStartTime;
+    }
 }
 
-function togglePlay(btn) {
+function togglePlay() {
     if (!playing) {
         if (recordedNotes.length) {
-            btn.classList.toggle("pianoKeyPressed");
-            if (recording) {
-                toggleRecord;
+            playButton.classList.toggle("pianoKeyPressed");
+            if(recording){
+                toggleRecord();
             }
             playing = true;
             replayNotes(...recordedNotes);
         }
     }
+    
 
 }
 
@@ -185,10 +192,9 @@ async function playTone(pressedKey, ...notes) {
         osc.frequency.value = note.freq;
         osc.start();
         gainAndOscs.push({ gain: gain, osc: osc });
-        if (recording) {
-            let newNote = { note: note.note, freq: note.freq };
-            newNotes.push(newNote);
-        }
+        let newNote = { note: note.note, freq: note.freq };
+        newNotes.push(newNote);
+        
     })
     await new Promise((resolve) => {
         document.addEventListener("mouseup", () => resolve());
@@ -205,7 +211,7 @@ async function playTone(pressedKey, ...notes) {
     newNotes.forEach(newNote => {
         if (recording) {
             newNote.duration = audioContext.currentTime - currNoteStartTime;
-            newNote.startTime = audioContext.currentTime - firstNoteStartTime;
+            newNote.startTime = currNoteStartTime - firstNoteStartTime;
             recordedNotes.push(...newNotes);
         }
 
@@ -478,6 +484,10 @@ function replayNotes(...notes) {
        
     })
 
+    setTimeout(()=>{
+        playButton.classList.remove("pianoKeyPressed");
+        playing = false;
+    },(recordingTime + notes[notes.length-1].duration) * 1000);
 
     //if(!notes.length) playBasicSound();
 }
@@ -497,5 +507,6 @@ async function playBasicSound(freq, duration = 1, oscType = "triangle") {
     await new Promise(resolve => {
         setTimeout(resolve, duration * 1000);
     })
+    oscillator.stop(audioContext.currentTime + fadeTime);
     gain.gain.exponentialRampToValueAtTime(.001, audioContext.currentTime + fadeTime);
 }
