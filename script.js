@@ -30,6 +30,7 @@ function init() {
     setupKeyboard();
     setUpKeyListeners();
     setupDirections();
+    setupButtons();
 }
 
 function setupKeyboard() {
@@ -53,7 +54,6 @@ function setupKeyboard() {
 function setUpKeyListeners() {
     for(let key in chordControls) {
         let keyControl = chordControls[key];
-        console.log(keyControl.control)
         document.addEventListener("keypress", (e) => {
             if (e.key === keyControl.key && !keyControl.control) {
                 keyControl.control = true;
@@ -68,17 +68,31 @@ function setUpKeyListeners() {
    
 }
 
+
 function setupDirections(){
-    let container = document.getElementById("container");
+    let directionsContainer = document.getElementById("directionsContainer");
     let p = document.createElement("p");
     p.innerHTML = "Click a key to play a note";
-    container.appendChild(p);
+    directionsContainer.appendChild(p);
     for(key in chordControls){
         let keyControl = chordControls[key];
         let p = document.createElement("p");
         p.innerHTML = `Hold "${keyControl.key}" to play a ${keyControl.description}`;
-        container.appendChild(p);
+        directionsContainer.appendChild(p);
     }
+}
+
+function setupButtons(){
+    let buttonsContainer = document.getElementById("buttonsContainer");
+    let button = document.createElement("div");
+    button.className = "recordButton";
+    button.innerHTML = "⏺";
+    buttonsContainer.appendChild(button);
+    button.addEventListener("click", ()=>toggleRecord(button));
+}
+
+function toggleRecord(btn){
+    btn.classList.toggle("pianoKeyPressed");
 }
 
 function handleKeyPress(e, note) {
