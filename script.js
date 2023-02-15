@@ -15,10 +15,11 @@ function init() {
 function setupKeyboard() {
     notes.forEach((note, idx) => {
         {
-            note.freq = noteFrequencies[note.note];
-            note.index = idx;
             let pianoKey = document.createElement("button");
             pianoKey.className = "reset-button pianoKey";
+            note.freq = noteFrequencies[note.note];
+            note.index = idx;
+            note.pianoKey = pianoKey;
             if (note.blackKey) {
                 pianoKey.className += " blackKey";
             }
