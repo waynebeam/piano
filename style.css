@@ -1,4 +1,4 @@
-#body {
+#keyboardContainer {
     display: flex;
     flex-flow: row nowrap;
     justify-content: start;

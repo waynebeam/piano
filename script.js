@@ -1,15 +1,35 @@
-let body = document.getElementById("body");
+let keyboardContainer = document.getElementById("keyboardContainer");
 let audioContext = new AudioContext();
 let noteStartTime;
 const fadeTime = 0.8;
-let majChord = false;
-let minChord = false;
-let seventhChord = false;
 
+const chordControls = {
+    majChord: {
+        key: "a",
+        description: "Major Chord",
+        control: false
+    },
+    minChord: {
+        key: "e",
+        description: "Minor Chord",
+        control: false
+    },
+    seventhChord: {
+        key: "s",
+        description: "Seventh",
+        control: false
+    },
+    dimChord: {
+        key: "d",
+        description: "Diminished Chord",
+        control: false
+    }
+}
 
 function init() {
     setupKeyboard();
     setUpKeyListeners();
+    setupDirections();
 }
 
 function setupKeyboard() {
@@ -23,7 +43,7 @@ function setupKeyboard() {
             if (note.blackKey) {
                 pianoKey.className += " blackKey";
             }
-            body.appendChild(pianoKey);
+            keyboardContainer.appendChild(pianoKey);
 
             pianoKey.addEventListener("mousedown", (e) => handleKeyPress(e, note));
         }
@@ -31,50 +51,46 @@ function setupKeyboard() {
 }
 
 function setUpKeyListeners() {
-    document.addEventListener("keypress", (e) => {
-        if (e.key === "a" && !majChord) {
-            majChord = true;
-        }
-    })
-    document.addEventListener("keyup", e => {
-        if (e.key === "a") {
-            majChord = false;
-        }
-    })
-    document.addEventListener("keypress", (e) => {
-        if (e.key === "e" && !minChord) {
-            minChord = true;
-        }
-    })
-    document.addEventListener("keyup", e => {
-        if (e.key === "e") {
-            minChord = false;
-        }
-    })
-    document.addEventListener("keypress", (e) => {
-        if (e.key === "s" && !minChord) {
-            seventhChord = true;
-        }
-    })
-    document.addEventListener("keyup", e => {
-        if (e.key === "s") {
-            seventhChord = false;
-        }
-    })
+    for(let key in chordControls) {
+        let keyControl = chordControls[key];
+        console.log(keyControl.control)
+        document.addEventListener("keypress", (e) => {
+            if (e.key === keyControl.key && !keyControl.control) {
+                keyControl.control = true;
+            }
+        })
+        document.addEventListener("keyup", e => {
+            if (e.key === keyControl.key) {
+                keyControl.control = false;
+            }
+        })
+    }
+   
+}
 
-    
+function setupDirections(){
+    let container = document.getElementById("container");
+    let p = document.createElement("p");
+    p.innerHTML = "Click a key to play a note";
+    container.appendChild(p);
+    for(key in chordControls){
+        let keyControl = chordControls[key];
+        let p = document.createElement("p");
+        p.innerHTML = `Hold "${keyControl.key}" to play a ${keyControl.description}`;
+        container.appendChild(p);
+    }
 }
 
 function handleKeyPress(e, note) {
     let notesToPlay = [note];
-    if (majChord || minChord) {
+    if (chordControls.majChord.control|| chordControls.minChord.control) {
         let perfFifth = note.index + 7;
         if (perfFifth < notes.length) {
             let fifthNote = notes[perfFifth];
             fifthNote.freq = noteFrequencies[fifthNote.note];
             notesToPlay.push(fifthNote);
         }
-        if(seventhChord) {
+        if (chordControls.seventhChord.control) {
             let seventh = note.index + 10;
             if (seventh < notes.length) {
                 let seventhNote = notes[seventh];
@@ -83,7 +99,7 @@ function handleKeyPress(e, note) {
             }
         }
     }
-    if (majChord) {
+    if (chordControls.majChord.control) {
         let majThird = note.index + 4;
         if (majThird < notes.length) {
             let thirdNote = notes[majThird];
@@ -92,12 +108,20 @@ function handleKeyPress(e, note) {
         }
 
     }
-    else if (minChord) {
+    else if (chordControls.minChord.control || chordControls.dimChord.control) {
         let minThird = note.index + 3;
         if (minThird < notes.length) {
             let thirdNote = notes[minThird];
             thirdNote.freq = noteFrequencies[thirdNote.note];
             notesToPlay.push(thirdNote);
+        }
+        if (chordControls.dimChord.control) {
+            let minFifth = note.index + 6;
+            if (minFifth < notes.length) {
+                let fifthNote = notes[minFifth];
+                fifthNote.freq = noteFrequencies[fifthNote.note];
+                notesToPlay.push(fifthNote);
+            }
         }
     }
 
