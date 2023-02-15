@@ -477,6 +477,7 @@ init();
 function replayNotes(noteGroups) {
     noteGroups.forEach((noteGroup) => {
         let gain = audioContext.createGain();
+        gain.connect(audioContext.destination);
         noteGroup.forEach((note) => {
             let time = setTimeout(() => {
                 playBasicSound(gain, note.freq, note.duration, note.oscType);
@@ -497,7 +498,6 @@ async function playBasicSound(gain, freq, duration, oscType = "triangle") {
     const frequency = freq;
 
     const oscillator = audioContext.createOscillator();
-    gain.connect(audioContext.destination);
     oscillator.connect(gain);
     oscillator.type = oscType;
     oscillator.frequency.value = frequency;
