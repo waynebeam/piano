@@ -3,6 +3,8 @@ let audioContext = new AudioContext();
 let noteStartTime;
 const fadeTime = 0.8;
 let majChord = false;
+let minChord = false;
+let seventhChord = false;
 
 
 function init() {
@@ -28,29 +30,43 @@ function setupKeyboard() {
 }
 
 function setUpKeyListeners() {
-    document.addEventListener("keypress", (e)=>{
-        if(e.key === "a" && !majChord)
-        {
+    document.addEventListener("keypress", (e) => {
+        if (e.key === "a" && !majChord) {
             majChord = true;
         }
     })
-    document.addEventListener("keyup", e=>{
-        if(e.key === "a")
-        {
+    document.addEventListener("keyup", e => {
+        if (e.key === "a") {
             majChord = false;
         }
     })
+    document.addEventListener("keypress", (e) => {
+        if (e.key === "e" && !minChord) {
+            minChord = true;
+        }
+    })
+    document.addEventListener("keyup", e => {
+        if (e.key === "e") {
+            minChord = false;
+        }
+    })
+    document.addEventListener("keypress", (e) => {
+        if (e.key === "s" && !minChord) {
+            seventhChord = true;
+        }
+    })
+    document.addEventListener("keyup", e => {
+        if (e.key === "s") {
+            seventhChord = false;
+        }
+    })
+
+    
 }
 
 function handleKeyPress(e, note) {
     let notesToPlay = [note];
-    if (majChord) {
-        let majThird = note.index + 4;
-        if (majThird < notes.length) {
-            let thirdNote = notes[majThird];
-            thirdNote.freq = noteFrequencies[thirdNote.note];
-            notesToPlay.push(thirdNote);
-        }
+    if (majChord || minChord) {
         let perfFifth = note.index + 7;
         if (perfFifth < notes.length) {
             let fifthNote = notes[perfFifth];
@@ -58,6 +74,32 @@ function handleKeyPress(e, note) {
             notesToPlay.push(fifthNote);
         }
     }
+    if(seventhChord) {
+        let seventh = note.index + 10;
+        if (seventh < notes.length) {
+            let seventhNote = notes[seventh];
+            seventhNote.freq = noteFrequencies[seventhNote.note];
+            notesToPlay.push(seventhNote);
+        }
+    }
+    if (majChord) {
+        let majThird = note.index + 4;
+        if (majThird < notes.length) {
+            let thirdNote = notes[majThird];
+            thirdNote.freq = noteFrequencies[thirdNote.note];
+            notesToPlay.push(thirdNote);
+        }
+
+    }
+    else if (minChord) {
+        let minThird = note.index + 3;
+        if (minThird < notes.length) {
+            let thirdNote = notes[minThird];
+            thirdNote.freq = noteFrequencies[thirdNote.note];
+            notesToPlay.push(thirdNote);
+        }
+    }
+
     playTone(e.target, ...notesToPlay);
 
 }
