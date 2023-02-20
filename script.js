@@ -549,4 +549,9 @@ async function playBasicSound(gain, freq, duration, oscType = "triangle") {
     gain.gain.exponentialRampToValueAtTime(.001, audioContext.currentTime + fadeTime);
 }
 
-//TODO: make the record and play toggles, play start play stop and record start and record stop
+//TODO: 
+//1. make the record and play toggles fucntions into: play start play stop and record start and record stop
+//2. display the notes being played?
+//3. implement augmented chords. That needs a keyboard shortcut
+//4. Make starting index ffor the left-most key a variable
+//add a button to shift it and redraw the keys
