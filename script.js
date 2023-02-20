@@ -555,3 +555,7 @@ async function playBasicSound(gain, freq, duration, oscType = "triangle") {
 //3. implement augmented chords. That needs a keyboard shortcut
 //4. Make starting index ffor the left-most key a variable
 //add a button to shift it and redraw the keys
+//5. page title
+//6. when recording starts, only blank out the recording when you start with new notes, not just when clikcing record button
+//7. change the emoji to words, because they render weird on diff devices
+//8. sans-serif font
