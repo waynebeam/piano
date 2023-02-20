@@ -13,12 +13,12 @@ let recordButton = document.createElement("div");
 
 
 const chordControls = {
-    majChord: {
+    majorChord: {
         key: "a",
         description: "Major Chord",
         control: false
     },
-    minChord: {
+    minorChord: {
         key: "e",
         description: "Minor Chord",
         control: false
@@ -32,6 +32,17 @@ const chordControls = {
         key: "d",
         description: "Diminished Chord",
         control: false
+    },
+    firstInversionChord: {
+        key: "f",
+        description: "first inversion",
+        control: false
+    },
+    secondInversionChord: {
+        key: "v",
+        description: "second inversion",
+        control: false
+        
     }
 }
 
@@ -55,7 +66,7 @@ function setupKeyboard() {
             }
             keyboardContainer.appendChild(pianoKey);
 
-            pianoKey.addEventListener("mousedown", (e) => handleKeyPress(e, note));
+            pianoKey.addEventListener("mousedown", (e) => handleNoteClicked(e, note));
         }
     })
 }
@@ -130,53 +141,81 @@ function togglePlay() {
 
 }
 
-function handleKeyPress(e, note) {
-    let notesToPlay = [note];
-    if (chordControls.majChord.control || chordControls.minChord.control) {
-        let perfFifth = note.index + 7;
-        if (perfFifth < notes.length) {
-            let fifthNote = notes[perfFifth];
-            fifthNote.freq = noteFrequencies[fifthNote.note];
-            notesToPlay.push(fifthNote);
-        }
-        if (chordControls.seventhChord.control) {
-            let seventh = note.index + 10;
-            if (seventh < notes.length) {
-                let seventhNote = notes[seventh];
-                seventhNote.freq = noteFrequencies[seventhNote.note];
-                notesToPlay.push(seventhNote);
-            }
-        }
-    }
-    if (chordControls.majChord.control) {
-        let majThird = note.index + 4;
-        if (majThird < notes.length) {
-            let thirdNote = notes[majThird];
-            thirdNote.freq = noteFrequencies[thirdNote.note];
-            notesToPlay.push(thirdNote);
+function handleNoteClicked(e, rootNote) {
+    let majorChord = chordControls.majorChord.control;
+    let minorChord = chordControls.minorChord.control;
+    let diminished = chordControls.dimChord.control;
+    let seventh = chordControls.seventhChord.control;
+    let firstInversionChord = chordControls.firstInversionChord.control;
+    let secondInversionChord = chordControls.secondInversionChord.control;
+
+    const findIntervals = {
+        major: () => {
+            let indexes = [rootNote.index+4, rootNote.index + 7];
+            if(seventh) indexes.push(rootNote.index + 10);
+            return indexes;
+        },
+        minor: () => {
+            let indexes = [rootNote.index+3, rootNote.index + 7];
+            if(seventh) indexes.push(rootNote.index + 10);
+            return indexes;
+        },
+        diminished: () => [rootNote.index+3, rootNote.index + 6],
+        augmented: () => [rootNote.index+4, rootNote.index + 8],
+        majorFirstInversion: () => {
+            let indexes = [rootNote.index - 8, rootNote.index - 5];
+            if(seventh) indexes.push(rootNote.index - 2);
+            return indexes;
+        },
+        minorFirstInversion: () => {
+            let indexes = [rootNote.index - 9, rootNote.index - 5];
+            if(seventh) indexes.push(rootNote.index - 2);
+            return indexes;
+        },
+        majorSecondInversion: () => {
+            let indexes = [rootNote.index - 5, rootNote.index +4];
+            if(seventh) indexes.push(rootNote.index - 2);
+            return indexes;
+        },
+        minorSecondInversion: () => {
+            let indexes = [rootNote.index - 5, rootNote.index +3];
+            if(seventh) indexes.push(rootNote.index - 2);
+            return indexes;
         }
 
     }
-    else if (chordControls.minChord.control || chordControls.dimChord.control) {
-        let minThird = note.index + 3;
-        if (minThird < notes.length) {
-            let thirdNote = notes[minThird];
-            thirdNote.freq = noteFrequencies[thirdNote.note];
-            notesToPlay.push(thirdNote);
-        }
-        if (chordControls.dimChord.control) {
-            let minFifth = note.index + 6;
-            if (minFifth < notes.length) {
-                let fifthNote = notes[minFifth];
-                fifthNote.freq = noteFrequencies[fifthNote.note];
-                notesToPlay.push(fifthNote);
-            }
-        }
-    }
 
+    function getIndexes(){
+        if(majorChord && firstInversionChord){
+            return findIntervals.majorFirstInversion();
+        }
+        if(majorChord && secondInversionChord)
+            return findIntervals.majorSecondInversion();
+        if(majorChord)
+            return findIntervals.major();
+        if(minorChord && firstInversionChord)
+            return findIntervals.minorFirstInversion();
+        if(minorChord && secondInversionChord)
+            return findIntervals.minorSecondInversion();
+        if(minorChord)
+            return findIntervals.minor();
+        if(diminished)
+            return findIntervals.diminished();
+        return [];
+        
+    }
+    indexes = getIndexes().filter((index)=>index >= 0 && index< notes.length);
+    let notesToPlay = [rootNote];
+    indexes.forEach(index=> {
+        let note = notes[index];
+        note.freq = noteFrequencies[note.note];
+        notesToPlay.push(note);
+    })
+    
     playTone(e.target, ...notesToPlay);
 
 }
+
 
 async function playTone(pressedKey, ...notes) {
     currNoteStartTime = audioContext.currentTime;
