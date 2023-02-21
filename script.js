@@ -37,6 +37,12 @@ const chordControls = {
         control: false,
         directions: function () {return `Hold "${this.key}" to play a Diminished Chord`},
     },
+    augChord: {
+        key: "x",
+        description: "Augmented Chord",
+        control: false,
+        directions: function () {return `Hold "${this.key}" to play a Augmented Chord`},
+    },
     firstInversionChord: {
         key: "f",
         description: "first inversion",
@@ -154,6 +160,7 @@ function handleNoteClicked(pianoKey, rootNote) {
     let majorChord = chordControls.majorChord.control;
     let minorChord = chordControls.minorChord.control;
     let diminished = chordControls.dimChord.control;
+    let augmented = chordControls.augChord.control;
     let seventh = chordControls.seventhChord.control;
     let firstInversionChord = chordControls.firstInversionChord.control;
     let secondInversionChord = chordControls.secondInversionChord.control;
@@ -214,6 +221,8 @@ function handleNoteClicked(pianoKey, rootNote) {
             return findIntervals.minor();
         if(diminished)
             return findIntervals.diminished();
+        if(augmented)
+            return findIntervals.augmented();
         return [];
         
     }
@@ -565,7 +574,7 @@ async function playBasicSound(gain, freq, duration, oscType = "triangle") {
 //TODO: 
 //1. make the record and play toggles fucntions into: play start play stop and record start and record stop
 //2. display the notes being played?
-//3. implement augmented chords. That needs a keyboard shortcut
+
 //4. Make starting index ffor the left-most key a variable
 //add a button to shift it and redraw the keys
 //5. page title
