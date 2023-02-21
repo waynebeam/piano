@@ -16,35 +16,44 @@ const chordControls = {
     majorChord: {
         key: "a",
         description: "Major Chord",
-        control: false
+        control: false,
+        directions: function () {return `Hold "${this.key}" to play a Major Chord`},
     },
     minorChord: {
         key: "e",
         description: "Minor Chord",
-        control: false
+        control: false,
+        directions: function () {return `Hold "${this.key}" to play a Minor Chord`},
     },
     seventhChord: {
         key: "s",
         description: "Seventh",
-        control: false
+        control: false,
+        directions: function () {return `Hold ""${this.key}" to add a Seventh to the chord}`},
     },
     dimChord: {
         key: "d",
         description: "Diminished Chord",
-        control: false
+        control: false,
+        directions: function () {return `Hold "${this.key}" to play a Diminished Chord`},
     },
     firstInversionChord: {
         key: "f",
         description: "first inversion",
-        control: false
+        control: false,
+        directions: function () {return `Hold "${this.key}" to play chords in First Inversion`},
     },
     secondInversionChord: {
         key: "v",
         description: "second inversion",
-        control: false
+        control: false,
+        directions: function () {return `Hold "${this.key}" to play chords in Second Inversion`},
         
     }
 }
+
+
+
 
 function init() {
     setupKeyboard();
@@ -97,7 +106,7 @@ function setupDirections() {
     for (key in chordControls) {
         let keyControl = chordControls[key];
         let p = document.createElement("p");
-        p.innerHTML = `Hold "${keyControl.key}" to play a ${keyControl.description}`;
+        p.innerHTML = keyControl.directions();
         directionsContainer.appendChild(p);
     }
 }
