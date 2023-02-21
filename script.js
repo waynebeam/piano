@@ -114,11 +114,11 @@ function setupDirections() {
 function setupButtons() {
     let buttonsContainer = document.getElementById("directionsAndButtonsContainer");
     recordButton.className = "recordButton";
-    recordButton.innerHTML = "⏺";
+    recordButton.innerHTML = "Rec";
     buttonsContainer.appendChild(recordButton);
     recordButton.addEventListener("click", () => toggleRecord());
     playButton.className = "recordButton";
-    playButton.innerHTML = "⏯";
+    playButton.innerHTML = "Play";
     buttonsContainer.appendChild(playButton);
     playButton.addEventListener("click", () => togglePlay());
 }

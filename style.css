@@ -1,3 +1,7 @@
+html {
+    font-family: sans-serif;
+}
+
 #keyboardContainer {
     display: flex;
     flex-flow: row nowrap;
@@ -24,12 +28,12 @@
     border-radius: 5px;
     border-bottom: 15px solid black;
     text-align: center;
-    font-size: 3rem;
+    font-size: 1rem;
     color: darkred;
     transition: all 50ms ease-out;
     display: inline-block;
     margin: 0 10px;
-
+    line-height: 3em;
 
 }
 
