@@ -29,7 +29,7 @@ const chordControls = {
         key: "s",
         description: "Seventh",
         control: false,
-        directions: function () {return `Hold ""${this.key}" to add a Seventh to the chord}`},
+        directions: function () {return `Hold ""${this.key}" to add a Seventh to the chord`},
     },
     dimChord: {
         key: "d",
