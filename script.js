@@ -75,7 +75,7 @@ function setupKeyboard() {
             }
             keyboardContainer.appendChild(pianoKey);
 
-            pianoKey.addEventListener("mousedown", (e) => handleNoteClicked(e, note));
+            pianoKey.addEventListener("mousedown", () => handleNoteClicked(this, note));
         }
     })
 }
@@ -150,7 +150,7 @@ function togglePlay() {
 
 }
 
-function handleNoteClicked(e, rootNote) {
+function handleNoteClicked(pianoKey, rootNote) {
     let majorChord = chordControls.majorChord.control;
     let minorChord = chordControls.minorChord.control;
     let diminished = chordControls.dimChord.control;
@@ -225,7 +225,7 @@ function handleNoteClicked(e, rootNote) {
         notesToPlay.push(note);
     })
     
-    playTone(e.target, ...notesToPlay);
+    playTone(pianoKey, ...notesToPlay);
 
 }
 
