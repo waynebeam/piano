@@ -197,6 +197,10 @@ function handleNoteClicked(e, rootNote) {
             return findIntervals.minorFirstInversion();
         if(minorChord && secondInversionChord)
             return findIntervals.minorSecondInversion();
+        if(firstInversionChord)
+            return findIntervals.majorFirstInversion();
+        if(secondInversionChord)
+            return findIntervals.majorSecondInversion();
         if(minorChord)
             return findIntervals.minor();
         if(diminished)
