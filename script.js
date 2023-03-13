@@ -62,23 +62,25 @@ const chordControls = {
 
 
 function init() {
-    setupKeyboard();
-    setUpKeyListeners();
+    buildKeyboard();
     setupDirections();
     setupButtons();
 }
 
+function buildKeyboard(startingNoteOffset = 0, firstOctave = 3){
+    setupKeyboard(startingNoteOffset, firstOctave);
+    setUpKeyListeners();
+}
+
 let availableNotes;
 
-function setupKeyboard() {
-    let startingNoteOffset = 0;
+function setupKeyboard(startingNoteOffset, firstOctave) {
     let assignedNotes = [];
     for (let i=0; i<25; i++) {
         let selectedNote = (i + startingNoteOffset) % 12;
         assignedNotes.push({...unassignedNotes[selectedNote]})
     }
     let notesToBuild = assignedNotes.map((note, idx)=>{
-        let firstOctave = 3;
         let octave = Math.floor(idx/12) + firstOctave;
         let newNote = {...note};
         newNote.note += octave;
@@ -537,7 +539,6 @@ async function playBasicSound(gain, freq, duration, oscType = "triangle") {
 //1. make the record and play toggles fucntions into: play start play stop and record start and record stop
 //2. display the notes being played?
 
-//4. Make starting index ffor the left-most key a variable
 //add a button to shift it and redraw the keys
 
 //6. when recording starts, only blank out the recording when you start with new notes, not just when clikcing record button
