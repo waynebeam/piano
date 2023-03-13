@@ -71,7 +71,13 @@ function init() {
 let availableNotes;
 
 function setupKeyboard() {
-    let notesToBuild = unassignedNotes.map((note, idx)=>{
+    let startingNoteOffset = 0;
+    let assignedNotes = [];
+    for (let i=0; i<25; i++) {
+        let selectedNote = (i + startingNoteOffset) % 12;
+        assignedNotes.push({...unassignedNotes[selectedNote]})
+    }
+    let notesToBuild = assignedNotes.map((note, idx)=>{
         let firstOctave = 3;
         let octave = Math.floor(idx/12) + firstOctave;
         let newNote = {...note};
@@ -345,63 +351,8 @@ const unassignedNotes = [
         blackKey: false,
 
     },
-    {
-        note: "C",
-        blackKey: false,
-    },
-    {
-        note: "C#",
-        blackKey: true,
-    },
-
-    {
-        note: "D",
-        blackKey: false,
-
-    },
-    {
-        note: "D#",
-        blackKey: true,
-    },
-    {
-        note: "E",
-        blackKey: false,
-
-    },
-    {
-        note: "F",
-        blackKey: false,
-
-    },
-    {
-        note: "F#",
-        blackKey: true,
-    },
-    {
-        note: "G",
-        blackKey: false,
-    },
-    {
-        note: "G#",
-        blackKey: true,
-    },
-    {
-        note: "A",
-        blackKey: false,
-    },
-    {
-        note: "A#",
-        blackKey: true,
-    },
-    {
-        note: "B",
-        blackKey: false,
-
-    },
-    {
-        note: "C",
-        blackKey: false,
-    },
+    
+   
 ]
 const noteFrequencies = {
     'C0': 16.35,
