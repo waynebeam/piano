@@ -68,8 +68,17 @@ function init() {
     setupButtons();
 }
 
+let availableNotes;
+
 function setupKeyboard() {
-    notes.forEach((note, idx) => {
+    let notesToBuild = unassignedNotes.map((note, idx)=>{
+        let firstOctave = 3;
+        let octave = Math.floor(idx/12) + firstOctave;
+        let newNote = {...note};
+        newNote.note += octave;
+        return newNote;
+    })
+    notesToBuild.forEach((note, idx) => {
         {
             let pianoKey = document.createElement("div");
             pianoKey.className = "reset-button pianoKey";
@@ -84,6 +93,8 @@ function setupKeyboard() {
             pianoKey.addEventListener("mousedown", () => handleNoteClicked(this, note));
         }
     })
+
+    availableNotes = notesToBuild;
 }
 
 function setUpKeyListeners() {
@@ -226,10 +237,10 @@ function handleNoteClicked(pianoKey, rootNote) {
         return [];
         
     }
-    indexes = getIndexes().filter((index)=>index >= 0 && index< notes.length);
+    indexes = getIndexes().filter((index)=>index >= 0 && index< availableNotes.length);
     let notesToPlay = [rootNote];
     indexes.forEach(index=> {
-        let note = notes[index];
+        let note = availableNotes[index];
         note.freq = noteFrequencies[note.note];
         notesToPlay.push(note);
     })
@@ -280,115 +291,115 @@ async function playTone(pressedKey, ...notes) {
     }
 }
 
-const notes = [
+const unassignedNotes = [
     {
-        note: "C3",
+        note: "C",
         blackKey: false,
 
     },
     {
-        note: "C#3",
+        note: "C#",
         blackKey: true,
     },
     {
-        note: "D3",
+        note: "D",
         blackKey: false,
 
     },
     {
-        note: "D#3",
+        note: "D#",
         blackKey: true,
     },
     {
-        note: "E3",
+        note: "E",
         blackKey: false,
 
     },
     {
-        note: "F3",
+        note: "F",
         blackKey: false,
 
     },
     {
-        note: "F#3",
+        note: "F#",
         blackKey: true,
     },
     {
-        note: "G3",
+        note: "G",
         blackKey: false,
     },
     {
-        note: "G#3",
+        note: "G#",
         blackKey: true,
     },
     {
-        note: "A3",
+        note: "A",
         blackKey: false,
     },
     {
-        note: "A#3",
+        note: "A#",
         blackKey: true,
     },
     {
-        note: "B3",
+        note: "B",
         blackKey: false,
 
     },
     {
-        note: "C4",
+        note: "C",
         blackKey: false,
     },
     {
-        note: "C#4",
+        note: "C#",
         blackKey: true,
     },
 
     {
-        note: "D4",
+        note: "D",
         blackKey: false,
 
     },
     {
-        note: "D#4",
+        note: "D#",
         blackKey: true,
     },
     {
-        note: "E4",
+        note: "E",
         blackKey: false,
 
     },
     {
-        note: "F4",
+        note: "F",
         blackKey: false,
 
     },
     {
-        note: "F#4",
+        note: "F#",
         blackKey: true,
     },
     {
-        note: "G4",
+        note: "G",
         blackKey: false,
     },
     {
-        note: "G#4",
+        note: "G#",
         blackKey: true,
     },
     {
-        note: "A4",
+        note: "A",
         blackKey: false,
     },
     {
-        note: "A#4",
+        note: "A#",
         blackKey: true,
     },
     {
-        note: "B4",
+        note: "B",
         blackKey: false,
 
     },
     {
-        note: "C5",
+        note: "C",
         blackKey: false,
     },
 ]
