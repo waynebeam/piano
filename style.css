@@ -75,3 +75,9 @@ html {
     transform: scaleY(1.04);
     
 }
+
+#directionsContainer {
+    pointer-events: none;
+    -webkit-user-select:none;
+    user-select: none;
+}
