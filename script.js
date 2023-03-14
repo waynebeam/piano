@@ -65,23 +65,34 @@ function init() {
     buildKeyboard();
     setupDirections();
     setupButtons();
+    setupControls();
+    window.addEventListener('resize', resetKeyboard);
+    let octaveSelector = document.getElementById('octave-selector');
+    octaveSelector.addEventListener('change', resetKeyboard);
+    let startingNoteSelector = document.getElementById('starting-note-selector');
+    startingNoteSelector.addEventListener('change', resetKeyboard);
 }
 
-function buildKeyboard(startingNoteOffset = 0, firstOctave = 3){
-    setupKeyboard(startingNoteOffset, firstOctave);
+function buildKeyboard(){
+    setupKeyboard();
     setUpKeyListeners();
 }
 
 let availableNotes;
 
-function setupKeyboard(startingNoteOffset, firstOctave) {
+function setupKeyboard() {
+    let octaveSelector = document.getElementById('octave-selector');
+    let firstOctave = parseInt(octaveSelector.value);
+    let startingNoteSelector = document.getElementById('starting-note-selector');
+    let startingNoteOffset = parseInt(startingNoteSelector.value);
+    
     let assignedNotes = [];
     for (let i=0; i<25; i++) {
         let selectedNote = (i + startingNoteOffset) % 12;
         assignedNotes.push({...unassignedNotes[selectedNote]})
     }
     let notesToBuild = assignedNotes.map((note, idx)=>{
-        let octave = Math.floor(idx/12) + firstOctave;
+        let octave = Math.floor((idx+startingNoteOffset)/12) + firstOctave;
         let newNote = {...note};
         newNote.note += octave;
         return newNote;
@@ -122,6 +133,17 @@ function setUpKeyListeners() {
 
 }
 
+function resetKeyboard(){
+    clearKeyboard();
+    buildKeyboard();
+}
+
+function clearKeyboard(){
+    while(keyboardContainer.firstChild)
+    {
+        keyboardContainer.removeChild(keyboardContainer.firstChild);
+    }
+}
 
 function setupDirections() {
     let directionsContainer = document.getElementById("directionsContainer");
@@ -146,6 +168,10 @@ function setupButtons() {
     playButton.innerHTML = "Play";
     buttonsContainer.appendChild(playButton);
     playButton.addEventListener("click", () => togglePlay());
+}
+
+function setupControls() {
+    
 }
 
 function toggleRecord() {
